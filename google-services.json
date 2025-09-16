@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "275680889078",
+    "project_id": "njik-provider",
+    "storage_bucket": "njik-provider.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:275680889078:android:da6dc9256add6a082644d7",
+        "android_client_info": {
+          "package_name": "com.njik.nijkProvider"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDtSXwfnSeFeCGtYtyFJoXkvU50bkXORuo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

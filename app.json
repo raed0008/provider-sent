@@ -1,0 +1,94 @@
+{
+  "expo": {
+    "name": "فني نجيك",
+    "slug": "NijkProvider-app",
+    "version": "2.5.0",
+    "orientation": "portrait",
+    "icon": "./app/assets/images/icon3.png",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "image": "./app/assets/images/splash2.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#FFFFFF"
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "bundleIdentifier": "com.njik.nijkProvider",
+      "buildNumber": "7",
+      "supportsTablet": true,
+      "googleServicesFile": "./GoogleService-Info.plist",
+      "infoPlist": {
+        "NSCameraUsageDescription": "This app uses the camera to submit photos and videos to assist with your service request.  The camera may also be used to upload a profile picture if you choose to do so.",
+        "NSPhotoLibraryAddUsageDescription": "This app requires access to your photo library if you wish to submit photos and videos to assist with your service request, or to submit a profile picture, if you choose to do so.",
+        "NSPhotoLibraryUsageDescription": "This app requires access to your photo library if you wish to submit photos and videos to assist with your service request, or to submit a profile picture, if you choose to do so.",
+        "NSMicrophoneUsageDescription": "This app requires access to your microphone if you wish to submit audio with your videos to assist with your service request.",
+        "NSUserNotificationUsageDescription": "يود \"في نجيك\" إرسال الإشعارات إليك. يمكن أن تتضمن الإشعارات تنبيهات وأصوات وشارات على الأيقونة. يمكن تكوين ذلك في الإعدادات.",
+        "NSLocationAlwaysAndWhenInUseUsageDescription": "This app needs continuous access to your location to find the nearest service providers based on your geographic location, even when you're not actively using the app. This ensures we can quickly connect you with the closest available services.",
+        "NSLocationWhenInUseUsageDescription": "This app needs access to your current location to identify and connect you with the nearest service providers in your area while using the app.",
+        "NSLocationAlwaysUsageDescription": "This app requires background location access to continuously monitor your location and automatically find the nearest service providers, ensuring optimal service delivery even when the app is not actively in use.",
+        "ITSAppUsesNonExemptEncryption": false
+      }
+    },
+    "android": {
+      "package": "com.njik.nijkProvider",
+      "googleServicesFile": "./google-services.json",
+      "versionCode": 45,
+      "permissions": [
+        "ACCESS_COARSE_LOCATION",
+        "RECEIVE_BOOT_COMPLETED",
+        "ACCESS_FINE_LOCATION",
+        "FOREGROUND_SERVICE",
+        "android.permission.ACCESS_COARSE_LOCATION",
+        "android.permission.ACCESS_FINE_LOCATION",
+        "android.permission.FOREGROUND_SERVICE",
+        "WAKE_LOCK"
+      ],
+      "adaptiveIcon": {
+        "foregroundImage": "./app/assets/images/icon3.png",
+        "backgroundColor": "#FFFFFF"
+      },
+      "targetSdkVersion": 35
+    },
+    "web": {
+      "favicon": "./app/assets/favicon.png"
+    },
+    "plugins": [
+      [
+        "expo-notifications",
+        {
+          "icon": "./app/assets/images/icon3.png",
+          "color": "#FFFFFF",
+          "sounds": [
+            "./app/assets/ordersound.wav"
+          ]
+        }
+      ],
+      [
+        "expo-location",
+        {
+          "locationAlwaysAndWhenInUsePermission": "نحتاج إلى موقعك لتحسين تجربة الاستخدام حتى أثناء عدم استخدام التطبيق.",
+          "locationAlwaysPermission": "يرجى السماح للتطبيق باستخدام موقعك دائمًا.",
+          "locationWhenInUsePermission": "يرجى السماح للتطبيق باستخدام موقعك أثناء الاستخدام.",
+          "isIosBackgroundLocationEnabled": true
+        }
+      ],
+      [
+        "expo-updates",
+        {
+          "username": "njik"
+        }
+      ],
+      "expo-build-properties",
+      "expo-secure-store"
+    ],
+    "runtimeVersion": "2.4.9",
+    "extra": {
+      "eas": {
+        "projectId": "564c2191-75ee-4e26-b210-13e07e366ffe",
+        "owner": "njik2"
+      }
+    }
+  }
+}
