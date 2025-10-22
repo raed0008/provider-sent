@@ -103,10 +103,9 @@ export const updateProviderData = async (id, data) => {
       },
     });
 
-    console.log("🔄 Full API Response:", JSON.stringify(updatedUser?.data, null, 2));
+    // console.log("🔄 Full API Response:", JSON.stringify(updatedUser?.data, null, 2));
 
     if (updatedUser?.data?.data) {
-      console.log("✅ Update SUCCESS, saved fields:", updatedUser?.data?.data?.attributes);
       return true;
     }
     return false;
@@ -155,7 +154,6 @@ export const AddNewNotification = async (id, type, notification, store) => {
 export const checkForceUpdate = async (id) => {
   try {
     const res = await api.get(`/api/providers/${id}?populate=*`);
-    console.log("🔍 Raw provider data:", res?.data?.data?.attributes);
     return res?.data?.data?.attributes;
   } catch (error) {
     console.log("Error checking force update:", error.message);

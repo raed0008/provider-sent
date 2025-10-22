@@ -107,11 +107,11 @@ const AdditionInfoScreen = ({ navigation, route }) => {
   const saveUserData = async (res, loggedUser) => {
     let dataToSave;
 
-    if (res && res.id) {
-      // دايمًا الأفضل ناخذ الرد اللي فيه attributes + id
+    if (res?.id) {
       dataToSave = res;
-    } else if (loggedUser && loggedUser.id) {
-      // fallback مع id
+    } else if (res?.data?.id) {
+      dataToSave = res.data;
+    } else if (loggedUser?.id) {
       dataToSave = loggedUser;
     } else {
       console.log("❌ No user data to save");
@@ -301,8 +301,10 @@ const AdditionInfoScreen = ({ navigation, route }) => {
       if (res || loggedUser) {
         await Notifications.scheduleNotificationAsync({
           content: {
-            title: "🎉 تسجيلك اكتمل",
-            body: "تم تقديم طلبك كمقدم خدمة بنجاح",
+            title: t("sign up success"),
+            body: t(
+              "Your application as a service provider has been submitted successfully."
+            ),
             channelId: "register",
           },
           trigger: null,

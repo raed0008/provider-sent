@@ -84,12 +84,12 @@ export default function PaymentAfterServiceDetails({ route, navigation }) {
   const [AdditionalAmountIDs, setAddionalAmountIds] = useState([]);
   const [spare_partsIds, setSparePartsIds] = useState([]);
   const provider = useSelector((state) => state?.user?.userData);
-  const [isManualFee, setIsManualFee] = useState(false); // <--- جديد
+  const [isManualFee, setIsManualFee] = useState(false);
 
   const handleAmountChange = (text) => {
     const parsedAmount = Number(text);
     if (!isNaN(parsedAmount) && parsedAmount >= 0) {
-      setAddedAmount(parsedAmount); // 👈 نحفظه زي ما هو
+      setAddedAmount(parsedAmount);
       setIsManualFee(true);
     } else {
       setAddedAmount(null);
@@ -163,7 +163,6 @@ export default function PaymentAfterServiceDetails({ route, navigation }) {
     setDropdownVisible(true);
   };
 
-  // استبدل handleConfirmService بدالة async تحفظ مباشرة في Strapi
   const handleConfirmService = async () => {
     if (!tempSelectedService) {
       Toast.show({
@@ -178,7 +177,6 @@ export default function PaymentAfterServiceDetails({ route, navigation }) {
       tempSelectedService?.attributes?.name_en?.toLowerCase() || "";
     const servicePrice = Number(tempSelectedService?.attributes?.Price) || 0;
 
-    // لو Other أو سعرها صفر → افتح مودال السبب
     if (
       serviceName.includes("other") ||
       serviceName.includes("another") ||
@@ -188,7 +186,6 @@ export default function PaymentAfterServiceDetails({ route, navigation }) {
       return;
     }
 
-    // ✅ نخزن مؤقت فقط
     setPendingServices((prev) => [
       ...prev,
       {
@@ -212,7 +209,6 @@ export default function PaymentAfterServiceDetails({ route, navigation }) {
     setTempSelectedService(null);
   };
 
-  // استبدل handleConfirmOtherReason بدالة async تحفظ مباشرة في Strapi مع السبب
   const handleConfirmOtherReason = async () => {
     setPendingServices((prev) => [
       ...prev,
@@ -221,9 +217,9 @@ export default function PaymentAfterServiceDetails({ route, navigation }) {
         data: {
           orderId: order.id,
           serviceId: tempSelectedService.id,
-          price: 0, // ✅ دايم صفر
+          price: 0, 
           quantity: 1,
-          explain: otherReason, // 👈 بس السبب
+          explain: otherReason, 
         },
       },
     ]);
@@ -264,7 +260,6 @@ export default function PaymentAfterServiceDetails({ route, navigation }) {
 
   console.log("🟡 Service Carts:", order?.attributes?.service_carts?.data);
   console.log("🟡 Services Orders:", servicesOrders);
-  // عدد كل الخدمات (الأصلية + الإضافية) بعد الفلترة
   const totalServicesCount =
     (order?.attributes?.service_carts?.data?.filter(
       (cart) => !hiddenCartIds.includes(cart.id)
@@ -273,12 +268,10 @@ export default function PaymentAfterServiceDetails({ route, navigation }) {
     (pendingServices.filter((p) => p.type === "add").length || 0);
 
   const isValidSpareParts = (spareParts) => {
-    // ✅ الحالة الأولى: ما فيه أي spareParts
     if (!spareParts || spareParts.length === 0) {
       return true;
     }
 
-    // ✅ الحالة الثانية: كل العناصر مكتملة
     return spareParts.every((part) => {
       const hasAmount = part?.amount && Number(part.amount) > 0;
       const hasImage = part?.billImage && part.billImage.trim() !== "";
@@ -289,7 +282,7 @@ export default function PaymentAfterServiceDetails({ route, navigation }) {
   const handleRequestPayment = async (id) => {
     try {
       setLoading(true);
-      const res = await requestPayment(id); // الدالة اللي من utils/orders
+      const res = await requestPayment(id); 
       console.log("🟡 Current navigation state:", navigation.getState());
       console.log(
         "🟡 Parent navigation state:",
@@ -334,7 +327,7 @@ export default function PaymentAfterServiceDetails({ route, navigation }) {
         <View style={styles.container2}>
           {/* عنوان القائمة */}
           <AppText
-            text={t("added_services")} // 👈 لازم تضيف المفتاح بالترجمة
+            text={t("added_services")} 
             style={{
               fontSize: 18,
               fontWeight: "700",
@@ -386,7 +379,7 @@ export default function PaymentAfterServiceDetails({ route, navigation }) {
               );
             })}
 
-            {/* 👇 الخدمات المضافة مؤقتًا */}
+            {/* الخدمات المضافة مؤقتًا */}
             {pendingServices
               .filter((p) => p.type === "add")
               .map((p, index) => {
@@ -401,7 +394,7 @@ export default function PaymentAfterServiceDetails({ route, navigation }) {
                       style={{
                         flex: 1,
                         flexDirection:
-                          i18n.language === "ar" ? "row-reverse" : "row", // 👈 نفس ترتيب الأساسي
+                          i18n.language === "ar" ? "row" : "row-reverse", 
                         justifyContent: "space-between",
                         alignItems: "center",
                       }}
@@ -489,7 +482,7 @@ export default function PaymentAfterServiceDetails({ route, navigation }) {
                               text: t("delete"),
                               style: "destructive",
                               onPress: () => {
-                                setHiddenCartIds((prev) => [...prev, cart.id]); // يخفي الخدمة الأصلية
+                                setHiddenCartIds((prev) => [...prev, cart.id]);
                               },
                             },
                           ]
@@ -554,7 +547,7 @@ export default function PaymentAfterServiceDetails({ route, navigation }) {
               value={
                 isManualFee
                   ? AddedAmount?.toString() || "" // يدوي → خام
-                  : getPriceWithTax(AddedAmount)?.toString() || "" // من النظام → مع الضريبة
+                  : getPriceWithTax(AddedAmount)?.toString() || "" 
               }
               onChangeText={(text) => handleAmountChange(text)}
               style={styles.input}
@@ -585,10 +578,10 @@ export default function PaymentAfterServiceDetails({ route, navigation }) {
             <AppText
               text={
                 isManualFee
-                  ? getAdditionalPriceSum(spareParts, AddedAmount) || 0 // لو يدوي → لا تحسب ضريبة
+                  ? getAdditionalPriceSum(spareParts, AddedAmount) || 0 
                   : getPriceWithTax(
                       getAdditionalPriceSum(spareParts, AddedAmount) || 0
-                    ) // لو تلقائي → مع الضريبة
+                    )
               }
             />
             <AppText text={` ${t(CURRENCY)}`} />
@@ -655,9 +648,9 @@ export default function PaymentAfterServiceDetails({ route, navigation }) {
         setModalVisible={setDropdownVisible}
         message={
           <ScrollView
-            style={{ maxHeight: height * 0.7 }} // 👈 يحدد أقصى ارتفاع للمودال
+            style={{ maxHeight: height * 0.7 }} 
             contentContainerStyle={{
-              paddingBottom: 100, // 👈 مساحة إضافية تحت
+              paddingBottom: 100, 
             }}
             showsVerticalScrollIndicator={false}
           >
@@ -746,10 +739,8 @@ export default function PaymentAfterServiceDetails({ route, navigation }) {
             }}
             onPress={() => {
               if (order?.attributes?.totalPrice > 0) {
-                // ✅ لو فيه مبلغ → اطلب الدفع مباشرة
                 handleRequestPayment(order?.id);
               } else {
-                // ❌ لو ما فيه سعر → لا ينقله، بس يطلع Toast
                 Toast.show({
                   type: "error",
                   text1: alertText,

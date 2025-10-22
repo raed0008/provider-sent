@@ -13,18 +13,18 @@ import { TouchableOpacity } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { CHOOSE_DCOUMENT } from "../../navigation/routes";
 import { RFPercentage } from "react-native-responsive-fontsize";
-const { width , height } =Dimensions.get('screen') 
-export default function RegisterErrorDocument({  }) {
-    const navigation = useNavigation()
+const { width, height } = Dimensions.get("screen");
+export default function RegisterErrorDocument({}) {
+  const navigation = useNavigation();
   const dispatch = useDispatch();
   const { data: orders } = useOrders();
   const handleReturn = () => {
     dispatch(setOrders(orders));
     navigation.navigate("App");
   };
-const handleNavigation = ()=>{
-    navigation.navigate(CHOOSE_DCOUMENT , {status:"rejected"})
-}
+  const handleNavigation = () => {
+    navigation.navigate(CHOOSE_DCOUMENT, { status: "rejected" });
+  };
   return (
     <View
       style={{
@@ -41,24 +41,24 @@ const handleNavigation = ()=>{
         // loop={false}
         // ref={animation}
         style={{
-          width: width*0.2,
-          height: height*0.2,
+          width: width * 0.2,
+          height: height * 0.2,
         }}
         // Find more Lottie files at https://lottiefiles.com/featured
         source={require("../../assets/warn.json")}
       />
-      <View style={{  alignItems: "center", marginTop: 10 }}>
+      <View style={{ alignItems: "center", marginTop: 10 }}>
         <AppText
           style={styles.text}
-          text={
-"Your request has been rejected. Please re-enter the data."          }
+          text={"Your request has been rejected. Please re-enter the data."}
           onPress={() => handleReturn()}
         />
         <TouchableOpacity
-        style={{backgroundColor:Colors.primaryColor,  
-            borderRadius:10,
-            marginTop:20
-        }}
+          style={{
+            backgroundColor: Colors.primaryColor,
+            borderRadius: 10,
+            marginTop: 20,
+          }}
           onPress={() => handleNavigation()}
         >
           <AppText
@@ -66,11 +66,9 @@ const handleNavigation = ()=>{
             style={{
               fontSize: RFPercentage(2),
               color: Colors.whiteColor,
-              paddingHorizontal:40,
-              paddingVertical:10,
-            
+              paddingHorizontal: 40,
+              paddingVertical: 10,
             }}
-
           />
         </TouchableOpacity>
       </View>

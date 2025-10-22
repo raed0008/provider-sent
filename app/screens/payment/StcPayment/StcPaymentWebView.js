@@ -1,17 +1,29 @@
-
 import React, { useState, useEffect } from "react";
-import { View, Text, TextInput, Alert, Dimensions, Image, TouchableOpacity, Keyboard } from "react-native";
+import {
+  View,
+  Text,
+  TextInput,
+  Alert,
+  Dimensions,
+  Image,
+  TouchableOpacity,
+  Keyboard,
+} from "react-native";
 import AppText from "../../../component/AppText";
 import AppButton from "../../../component/AppButton";
 import ArrowBack from "../../../component/ArrowBack";
 import { handleConfirmPayment } from "./StcHelpers";
 import { Ionicons } from "@expo/vector-icons";
+import { MY_ORDERS, OFFERS, HOME, STC_PAYMENT_SUCCESS } from "../../../navigation/routes.js";
 import { paymentInquiry } from "./apiServices";
 import { GetOrderData, updateOrderData } from "../../../../utils/orders";
 import { useDispatch, useSelector } from "react-redux";
 // import * as Haptics from "expo-haptics";
 import useNotifications from "../../../../utils/notifications";
-import { HandleProviderProfitAfterSuccessPayment, HandleUserBalanceAfterOperation } from "../../payment/tabby/Tabbyhelpers";
+import {
+  HandleProviderProfitAfterSuccessPayment,
+  HandleUserBalanceAfterOperation,
+} from "../../payment/tabby/Tabbyhelpers";
 import { useTranslation } from "react-i18next";
 // import { useDarkMode } from "../../../context/DarkModeContext";
 import { Colors } from "../../../constant/styles";
@@ -37,17 +49,13 @@ const StcPayment = ({ route, navigation }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const [currentTime, setCurrentTime] = useState("");
-  const [showSuccess, setShowSuccess] = useState(false);
   const [showFail, setShowFail] = useState(false);
   const dispatch = useDispatch();
   const user = useSelector((state) => state?.user?.userData);
   const { sendPushNotification } = useNotifications();
   const { t, i18n } = useTranslation();
-  // const { isDarkMode } = useDarkMode();
   console.log("✅ StcPayment route params:", route?.params);
 
-
-  // 👇 هنا تحط الـ useEffect
   useEffect(() => {
     const updateTime = () => {
       const now = new Date();
@@ -68,9 +76,20 @@ const StcPayment = ({ route, navigation }) => {
   const handleSuccesFunction = async () => {
     try {
       await updateOrderData(orderId, { payment_brand: "stcpay" });
-      HandleUserBalanceAfterOperation(orderId, decreadedAmountFromWallet, user, dispatch);
+      HandleUserBalanceAfterOperation(
+        orderId,
+        decreadedAmountFromWallet,
+        user,
+        dispatch
+      );
       HandleProviderProfitAfterSuccessPayment(null, sendPushNotification);
-      handlePayOrderFun();
+
+      if (handlePayOrderFun) {
+        handlePayOrderFun();
+      }
+
+      navigation.navigate(STC_PAYMENT_SUCCESS, { amount });
+
     } catch (e) {
       console.log("Error handling success:", e);
     }
@@ -85,15 +104,16 @@ const StcPayment = ({ route, navigation }) => {
     });
   };
 
-
   return (
-    <View style={{ flex: 1, backgroundColor: Colors.whiteColor, paddingHorizontal: 20 }}>
+    <View
+      style={{
+        flex: 1,
+        backgroundColor: Colors.whiteColor,
+        paddingHorizontal: 20,
+      }}
+    >
       {/* modals */}
       <LoadingModal visible={isLoading} />
-      <SuccessModal visible={showSuccess} onClose={() => {
-        setShowSuccess(false);
-        navigation.goBack();
-      }} />
       <FailModal visible={showFail} onClose={() => setShowFail(false)} />
 
       {/* back button */}
@@ -107,7 +127,11 @@ const StcPayment = ({ route, navigation }) => {
             alignSelf: "flex-start",
           }}
         >
-          <Ionicons name="arrow-forward" size={25} color={Colors.stcprimaryColor} />
+          <Ionicons
+            name="arrow-forward"
+            size={25}
+            color={Colors.stcprimaryColor}
+          />
         </TouchableOpacity>
       </View>
 
@@ -120,8 +144,23 @@ const StcPayment = ({ route, navigation }) => {
       </View>
 
       {/* title */}
-      <AppText text={t("Verify OTP number")} style={{ fontSize: 20, fontWeight: "bold", textAlign: "center", marginBottom: 10 }} />
-      <AppText text={t("Enter the OTP sent to")} style={{ textAlign: "center", color: Colors.grayColor, marginBottom: 20 }} />
+      <AppText
+        text={t("Verify OTP number")}
+        style={{
+          fontSize: 20,
+          fontWeight: "bold",
+          textAlign: "center",
+          marginBottom: 10,
+        }}
+      />
+      <AppText
+        text={t("Enter the OTP sent to")}
+        style={{
+          textAlign: "center",
+          color: Colors.grayColor,
+          marginBottom: 20,
+        }}
+      />
 
       {/* card */}
       <View
@@ -138,7 +177,9 @@ const StcPayment = ({ route, navigation }) => {
       >
         {/* left */}
         <View style={{ alignItems: "flex-start" }}>
-          <Text style={{ fontWeight: "bold", color: Colors.stcsecondColor }}>{t("STC Bank")}</Text>
+          <Text style={{ fontWeight: "bold", color: Colors.stcsecondColor }}>
+            {t("STC Bank")}
+          </Text>
           <Text style={{ color: Colors.grayColor, fontSize: 12 }}>
             {t("Today at")} {currentTime}
           </Text>
@@ -151,7 +192,16 @@ const StcPayment = ({ route, navigation }) => {
       </View>
 
       {/* otp input */}
-      <Text style={{ fontWeight: "bold", marginBottom: 8, textAlign: i18n.dir() === "rtl" ? "left" : "right", writingDirection: i18n.dir() }}>{t("Enter your code below")}</Text>
+      <Text
+        style={{
+          fontWeight: "bold",
+          marginBottom: 8,
+          textAlign: i18n.dir() === "rtl" ? "left" : "right",
+          writingDirection: i18n.dir(),
+        }}
+      >
+        {t("Enter your code below")}
+      </Text>
       <TextInput
         value={OtpValue}
         onChangeText={(text) => {
@@ -178,7 +228,18 @@ const StcPayment = ({ route, navigation }) => {
         selectionColor={Colors.stcsecondColor}
         cursorColor={Colors.stcsecondColor}
       />
-      {error ? <Text style={{ color: "red", marginBottom: 10, textAlign: i18n.dir() === "rtl" ? "left" : "right", writingDirection: i18n.dir() }}>{t("Invalid OTP")}</Text> : null}
+      {error ? (
+        <Text
+          style={{
+            color: "red",
+            marginBottom: 10,
+            textAlign: i18n.dir() === "rtl" ? "left" : "right",
+            writingDirection: i18n.dir(),
+          }}
+        >
+          {t("Invalid OTP")}
+        </Text>
+      ) : null}
 
       {/* resend */}
       {/* <AppText
@@ -219,27 +280,8 @@ const StcPayment = ({ route, navigation }) => {
 
             if (res && res.ApprovalStatus === 2) {
               setError("");
-              handleSuccesFunction();
-
-              if (route?.params?.fromPayment) {
-                navigation.reset({
-                  index: 0,
-                  routes: [
-                    {
-                      name: "SUCESS_PAYMENT_SCREEN",
-                      params: {
-                        orderId,
-                        item: route?.params?.item,
-                        firstReview: true,
-                      },
-                    },
-                  ],
-                });
-              } else {
-                setShowSuccess(true);
-              }
-            }
-            else {
+              handleSuccesFunction(); // This will now navigate to success screen
+            } else {
               setError("Invalid OTP");
               setShowFail(true);
             }

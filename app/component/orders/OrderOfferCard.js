@@ -37,7 +37,7 @@ import {
 import {
   acceptOrder,
   GetProvidersOrders,
-  useSingleOrder,
+  isOrderAlreadyTaken,
 } from "../../../utils/orders";
 import {
   HOME,
@@ -112,15 +112,15 @@ const OrderCardSkeleton = () => (
   </View>
 );
 
-export default function OrderOfferCard({ item, onPress, children }) {
+export default function OrderOfferCard({ item, onPress, children, setModalIsLoading }) {
   const navigation = useNavigation();
   const provider = useSelector((state) => state?.user?.userData);
   const providerData = provider;
   const { t } = useTranslation();
   const { name: ItemsName, location } = useNameInLanguage();
 
-  const { data: orderData, isLoading } = useSingleOrder(item?.id);
-  const order = orderData?.attributes;
+  // استخدام البيانات المُمررة مباشرة بدلاً من جلبها من API
+  const order = item?.attributes;
 
   const name =
     order?.services?.data[0]?.attributes?.category?.data?.attributes[ItemsName];
@@ -134,7 +134,6 @@ export default function OrderOfferCard({ item, onPress, children }) {
   const { sendPushNotification } = useNotifications();
 
   // State management from ItemScreen
-  const [ModalisLoading, setModalIsLoading] = useState(false);
   const [isModalVisible, setModalVisible] = useState(false);
   const [errorMessage, setErrorMessage] = useState(null);
   const [timeLeft, setTimeLeft] = useState(null);
@@ -267,84 +266,55 @@ export default function OrderOfferCard({ item, onPress, children }) {
   const handleOrderAccept = async (id) => {
     try {
       setModalIsLoading(true);
-      setIsManuallyChecking(true);
 
-      const lastAcceptedTime = await checkLastOrderTime();
-      setIsManuallyChecking(false);
-
-      if (lastAcceptedTime) {
-        const now = new Date();
-        const diffInHours = (now - lastAcceptedTime) / (1000 * 60 * 60);
-
-        const updatedProvider = await getUserDataById(provider?.id);
-        const customWaitTime =
-          updatedProvider?.attributes?.acceptOrderWaitHours ?? 12;
-
-        if (diffInHours < customWaitTime) {
-          const remaining = Math.ceil(customWaitTime - diffInHours);
-          setErrorMessage(t("must_wait_hours_left", { hours: remaining }));
-          setModalIsLoading(false);
-          setModalVisible(false);
-          return;
-        }
+      const alreadyTaken = await isOrderAlreadyTaken(id);
+      if (alreadyTaken) {
+        setErrorMessage(t("order_already_accepted"));
+        setModalIsLoading(false);
+        return;
       }
 
       const userId = order?.user?.data?.id;
       const userNotificationToken =
         order?.user?.data?.attributes?.expoPushNotificationToken;
       const channel_id = createUniqueName(userId, provider?.id, id);
+
       const res = await acceptOrder(id, provider?.id, channel_id);
+
       if (res) {
-        let userId = order?.user?.data?.id;
-        let providerId = order?.provider;
-        const res = await updateUserData(providerData?.id, {
-          orders: {
-            connect: [{ id: id }],
-          },
+        await updateUserData(providerData?.id, {
+          orders: { connect: [{ id: id }] },
         });
-        if (res) {
-          sendPushNotification(
-            userNotificationToken,
-            "قبول طلب",
-            `تم قبول طلبك بواسطة ${provider?.attributes?.name}`,
-            "user",
-            userId,
-            true
-          );
 
-          navigation.dispatch(
-            CommonActions.reset({
-              index: 0,
-              routes: [{ name: t(MY_ORDERS) }],
-            })
-          );
+        sendPushNotification(
+          userNotificationToken,
+          t("accept_order_title"),
+          t("accept_order_message", { name: provider?.attributes?.name }),
+          "user",
+          userId,
+          true
+        );
 
-          Toast.show({
-            type: "success",
-            text1: t("Done successfully"),
-            position: "top",
-          });
+        navigation.dispatch(
+          CommonActions.reset({
+            index: 0,
+            routes: [{ name: t(MY_ORDERS) }],
+          })
+        );
 
-          // Close modal only on success
-          setModalVisible(false);
-        }
-      } else {
-        setErrorMessage(t("A problem occurred, try again."));
-        // Keep modal open to show error
+        Toast.show({
+          type: "success",
+          text1: t("Done successfully"),
+          position: "top",
+        });
+
+        setModalVisible(false);
       }
     } catch (error) {
-      console.log(error, "error accepting the order");
-
-      if (error.message === "تم قبول الطلب من فني آخر") {
-        setErrorMessage(t("order_already_accepted"));
-      } else {
-        setErrorMessage(t("order_accept_error"));
-      }
-      // Keep modal open to show error
+      console.log("error accepting the order:", error);
+      setErrorMessage(t("order_accept_error"));
     } finally {
       setModalIsLoading(false);
-      setIsManuallyChecking(false);
-      // Removed setModalVisible(false) from here
     }
   };
 
@@ -378,14 +348,14 @@ export default function OrderOfferCard({ item, onPress, children }) {
 
   const distance = calculateDistance();
 
-  // Show skeleton while loading or no order data
-  if (isLoading || !order) {
+  // إزالة شرط isLoading من السكيليتون
+  if (!order) {
     return <OrderCardSkeleton />;
   }
 
-  if (ModalisLoading) {
-    return <LoadingScreen />;
-  }
+  // if (ModalisLoading) {
+  //   return <LoadingScreen />;
+  // }
 
   return (
     <View style={styles.orderCard}>
@@ -603,25 +573,25 @@ const styles = StyleSheet.create({
     alignItems: "center",
     flexDirection: "row",
     justifyContent: "space-between",
-    paddingVertical: 3, // تقليل من 4
-    gap: 8, // تقليل من 10
+    paddingVertical: 3,
+    gap: 8,
   },
   headerContainer2: {
     display: "flex",
     alignItems: "center",
     flexDirection: "column",
-    paddingVertical: 3, // تقليل من 4
-    gap: 8, // تقليل من 10
+    paddingVertical: 3,
+    gap: 8,
   },
   header: {
     color: Colors.blackColor,
-    fontSize: RFPercentage(1.8), // كان 2.1
+    fontSize: RFPercentage(1.8),
   },
   wrapper: {
     backgroundColor: "transparent",
     color: Colors.primaryColor,
-    paddingHorizontal: 12, // تقليل من 15
-    borderRadius: 12, // تقليل من 15
+    paddingHorizontal: 12,
+    borderRadius: 12,
     overflow: "hidden",
   },
   content: {

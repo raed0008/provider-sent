@@ -61,34 +61,39 @@ const ButtonActionsContainer = ({
   const handleStartWorking = useCallback(
     async (id) => {
       try {
-        console.log("the order is ", id);
         setIsLoading(true);
+
+        // ✅ أول شي ينقل للشاشة مباشرة
+        navigation.navigate(PAY_AFTER_SERVICES_SCREEN, {
+          orderID: id,
+          item: selectedOrder,
+        });
+
+        // بعدين ينفذ التغيير بالخلفية
         const res = await changeOrderStatus(id, "working");
-        const userNotificationToken =
-          selectedOrder?.attributes?.user?.data?.attributes
-            ?.expoPushNotificationToken;
+
         if (res) {
-          let userId = selectedOrder?.attributes?.user?.data?.id;
-          sendPushNotification(
-            userNotificationToken,
-            ` قام ${provider?.attributes?.name} ببدء العمل على الطلب`,
-            "",
-            "user",
-            userId,
-            true
-          );
+          const userNotificationToken =
+            selectedOrder?.attributes?.user?.data?.attributes
+              ?.expoPushNotificationToken;
+
+          if (userNotificationToken) {
+            let userId = selectedOrder?.attributes?.user?.data?.id;
+            sendPushNotification(
+              userNotificationToken,
+              ` قام ${provider?.attributes?.name} ببدء العمل على الطلب`,
+              "",
+              "user",
+              userId,
+              true
+            );
+          }
 
           await refetch();
 
           Toast.show({
             text1: t("Done successfully start work"),
             type: "success",
-          });
-
-          // ✅ بعد ما يبدأ العمل مباشرة يفتح صفحة الدفع
-          navigation.navigate(PAY_AFTER_SERVICES_SCREEN, {
-            orderID: id,
-            item: selectedOrder,
           });
         } else {
           Toast.show({
@@ -99,7 +104,7 @@ const ButtonActionsContainer = ({
       } catch (error) {
         console.log(error, "error started working");
       } finally {
-        // setModalVisible(false);
+        setIsLoading(false);
       }
     },
     [selectedOrder, provider, refetch, navigation]
@@ -215,9 +220,10 @@ const ButtonActionsContainer = ({
         orderData?.attributes?.status === "cancel_request") && (
         <View>
           <AppButton
-            title={"Start Work"}
+            title={isLoading ? "loading..." : "Start Work"}
             style={{ backgroundColor: Colors.success }}
-            onPress={() => handleStartWorking(orderData?.id)}
+            onPress={() => handleStartWorking(orderData.id)}
+            disabled={isLoading}
           />
 
           {orderData?.attributes?.status === "assigned" && !cancelled && (

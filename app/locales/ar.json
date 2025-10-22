@@ -49,10 +49,15 @@
   "Reactivate and Start Working": "إعادة التنشيط والبدء في العمل",
   "SercureOrder": "اطلب بثقة وأمان",
   "clientReviews": "اراء العملاء",
+  "Please fill all required fields": "يرجى ملء جميع الحقول المطلوبة",
+  "The IBAN number must be exactly 22 digits": "يجب أن يكون رقم الآيبان 22 رقمًا",
+  "You can only request up to": "يمكنك طلب مبلغ لا يزيد عن {{amount}} {{currency}} بناءً على رصيدك الحالي.",
   "Invalid verification code": "رمز التحقق غير صحيح",
+  "You cannot request balance because your wallet is below the minimum limit": "لا يمكنك طلب الرصيد لأن محفظتك أقل من الحد الأدنى",
   "reserveAppointment": "حجز موعد",
   "CurrentOrders": "طلبات جاري تنفيذها",
   "PreviousOrders": "طلبات سابقه",
+  "You can only request balance once every 7 days": "يمكنك طلب الرصيد مرة واحدة كل 7 أيام.",
   "GeneralSettings": "الاعدادت العامة",
   "There are no Complete orders": "لا يوجد طلبات مكتملة.",
   "Book": "حجز",
@@ -136,10 +141,12 @@
   "Go to Settings": "الذهاب الي الاعدادات",
   "Allow": "السماح",
   "Change Number": "تغيير الرقم",
+  "loading...": "جاري البدء...",
   "I agree to the Terms and Conditions": "  أوافق على الشروط والأحكام و سياسة الخصوصية",
   "Privacy": "سیاسة الخصوصیة",
   "district": "الحي",
   "There is no notifications yet": "لا يوجد اي اشعارات ",
+  "Your application as a service provider has been submitted successfully.": "تم تقديم طلبك كمقدم خدمة بنجاح",
   "Sign Out": "تسجيل الخروج",
   "Contact Us": "تواصل معنا",
   "connect us": "تواصل معنا",
@@ -149,12 +156,55 @@
   "OTP Code Was Sent To": "تم إرسال رمز التحقق إلى",
   "Resend": "إعاده ارسال",
   "This Field is Required!": "هذا الحقل مطلوب",
+  "Continue to Charge": "استمرار في الشحن",
+  "Request Balance": "طلب رصيد",
+  "Fill in your details below to continue": "املأ بياناتك أدناه للمتابعة",
+  "you_can_only_request_up_to": "يمكنك طلب مبلغ لا يزيد عن {{amount}} {{currency}} بناءً على رصيدك الحالي.",
+  "accept_order_title": "قبول طلب",
+  "Clear search": "مسح البحث",
+  "You can try again now": "يمكنك المحاولة الآن",
+  "contact_support": "تواصل مع بالدعم",
+  "Return to App": "العودة إلى التطبيق",
+  "Confirm Selection": "تأكيد الاختيار",
+  "Clear": "مسح",
+  "Change": "تغيير",
+  "permanently_suspended": "تم تعليق حسابك بشكل دائم",
+  "account_banned": "تم حظر حسابك",
+  "permanently_suspended_message": "تم تعليق حسابك بشكل دائم. يرجى التواصل مع الدعم لمزيد من المعلومات.",
+  "Request Sent": "تم إرسال الطلب",
+  "continue": "استمرار",
+  "need_help": "تحتاج مساعدة؟ اضغط هنا",
+  "activated": "تم التفعيل",
+  "account_suspended": "الحساب معلق",
+  "account_active": "الحساب مفعل",
+  "can_continue": "يمكنك الآن الاستمرار في استخدام التطبيق",
+  "temporarily_suspended": "تم تعليق حسابك مؤقتًا",
+  "status": "الحالة",
+  "Your account has been temporarily suspended": "تم تعليق حسابك مؤقتًا",
+  "time_remaining": "الوقت المتبقي",
+  "can_try_again": "يمكنك المحاولة الآن",
+  
+  "accept_order_message": "تم قبول طلبك بواسطة {{name}}",
+  "Select your preferred options": "اختر الخيارات المفضلة لديك",
+  "Error": "خطأ",
   "Phone Number": "رقم الهاتف",
+  "selected": "مختار",
+  "sign up success": "🎉 تسجيلك اكتمل",
+  "Clear All": "مسح الكل",
+  "Search specialties...": "ابحث عن تخصصات ...",
+  "request_credit": "طلب رصيد",
+  "Payment Method": "طرق الدفع",
+  "your_request_for_amount_sent": "تم إرسال طلبك بمبلغ {{amount}} {{currency}} للمراجعة.",
+  "Select All": "اختيار الكل",
+  "Deselect All": "إلغاء اختيار الكل",
+  "Available Balance": "الرصيد المتاح",
   "What services do you intend to provide?": "ما هي الخدمات التي تنوي تقديمها ؟ ",
+  "No matching categories found": "لا توجد فئات مطابقة",
+  "No categories available": "لا توجد فئات متاحة",
   "Confirm": "تأكيد",
   "Network Timeout": "انتهاء مهلة الشبكة",
   "The request has been received and will be studied and responded to within 24 hours. To follow up on the request, you can contact us on WhatsApp number": "تم استلام الطلب وسيتم دراسته والرد خلال 24 ساعة ولمتابعة الطلب يمكنك التواصل معنا على الواتساب رقم ",
-  "Choose the most relevant specialties from the list": "أختر التخصصات الأكثر صلة من القائمة",
+  "Choose the most relevant specialty from the list": "أختر التخصص الأكثر صلة من القائمة",
   "the number of selected specialties": "عدد التخصصات المختاره",
   "By Creating an account you accept our Terms and Condition": "تسجيلك يؤكد موافقتك على سياسة الخصوصية وعلى الشروط والاحكام الخاصة بتطبيق نجيك",
   "First Name": "الاسم الأول",
@@ -237,6 +287,9 @@
   "Good": "جيد",
   "Average": "مقبول",
   "Very Bad": "سيئ جداً",
+  "Payment completed successfully": "تم إتمام الدفع بنجاح",
+  "wallet_recharge_title": "تم شحن المحفظة 💰",
+  "wallet_recharge_body": "تم شحن محفظتك بنجاح بمبلغ {{amount}} ريال سعودي.",
   "Family Name": "اسم العائلة",
   "Pricing": "أسعار الخدمات",
   "Rate": "تقييم",

@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-// import api from './index';
+import haversine from "haversine-distance";
 
 import api from "./index";
 import { useCallback } from "react";
@@ -30,7 +30,7 @@ export const delay_order_request = async (values) => {
         ...values,
       },
     });
-    return data?.data?.data || null
+    return data?.data?.data || null;
   } catch (error) {
     console.error("Error 22:", error.message); // Log the error response
   }
@@ -44,14 +44,25 @@ export const cancleOrder = async (id, providerId) => {
         status: "pending",
         chat_channel_id: null,
         previous_providers: {
-          connect: [{ id: providerId }]
-        }
+          connect: [{ id: providerId }],
+        },
       },
     });
     if (data?.data?.data?.id) return true;
     return false;
   } catch (error) {
     console.error("Error accepting order   :", error.message); // Log the error response
+  }
+};
+
+export const isOrderAlreadyTaken = async (id) => {
+  try {
+    const data = await api.get(`/api/orders/${id}?populate=provider`);
+    const providerId = data?.data?.data?.attributes?.provider?.data?.id;
+    return providerId ? true : false;
+  } catch (error) {
+    console.log("Error checking order provider:", error.message);
+    return false;
   }
 };
 
@@ -76,7 +87,7 @@ export const requestPayment = async (id) => {
     const data = await api.put(`/api/orders/${id}`, {
       data: {
         status: "payment_required",
-        provider_payment_status: "payment_required"
+        provider_payment_status: "payment_required",
       },
     });
     if (data?.data?.data?.id) return true;
@@ -89,11 +100,10 @@ export const UpdateOrder = async (id, data) => {
   try {
     const res = await api.put(`/api/orders/${id}`, {
       data: {
-        ...data
+        ...data,
       },
     });
     return data, res?.data?.data?.id;
-
   } catch (error) {
     console.error("Error updaing order   :", error.message); // Log the error response
   }
@@ -121,7 +131,9 @@ export default function useOrders() {
       let page = 1; // Start with the first page
 
       while (true) {
-        const response = await api.get(`/api/orders?populate=deep,4&pagination[page]=${parseInt(page, 10)}`);
+        const response = await api.get(
+          `/api/orders?populate=deep,4&pagination[page]=${parseInt(page, 10)}`
+        );
 
         // Assuming response.data is an array, proceed with adding to the allOrders array
         const currentPageOrders = response?.data?.data || [];
@@ -138,16 +150,14 @@ export default function useOrders() {
         page++;
       }
 
-
       return {
-        data: allOrders.reverse()
-      }
+        data: allOrders.reverse(),
+      };
     } catch (error) {
       console.log("Error fetching orders:", error);
       throw error;
     }
-  }, [])
-
+  }, []);
 
   const { data, isLoading, isError, refetch } = useQuery({
     queryKey: ["orders"],
@@ -156,7 +166,7 @@ export default function useOrders() {
     retry: 3, // Number of retry attempts if the request fails
     retryDelay: 1000, // Delay between retries in milliseconds
     staleTime: 5 * 60 * 1000, //
-  })
+  });
 
   return {
     refetch,
@@ -172,7 +182,12 @@ export function usePendingOrders() {
       let page = 1; // Start with the first page
 
       while (true) {
-        const response = await api.get(`/api/orders?filters[status][$eq]=pending?populate=deep,4&pagination[page]=${parseInt(page, 10)}`);
+        const response = await api.get(
+          `/api/orders?filters[status][$eq]=pending?populate=deep,4&pagination[page]=${parseInt(
+            page,
+            10
+          )}`
+        );
 
         // Assuming response.data is an array, proceed with adding to the allOrders array
         const currentPageOrders = response?.data?.data || [];
@@ -189,16 +204,14 @@ export function usePendingOrders() {
         page++;
       }
 
-
       return {
-        data: allOrders.reverse()
-      }
+        data: allOrders.reverse(),
+      };
     } catch (error) {
       console.log("Error fetching orders:", error);
       throw error;
     }
-  }, [])
-
+  }, []);
 
   const { data, isLoading, isError, refetch } = useQuery({
     queryKey: ["orders"],
@@ -207,7 +220,7 @@ export function usePendingOrders() {
     retry: 3, // Number of retry attempts if the request fails
     retryDelay: 1000, // Delay between retries in milliseconds
     staleTime: 5 * 60 * 1000, //
-  })
+  });
 
   return {
     refetch,
@@ -219,18 +232,21 @@ export function usePendingOrders() {
 
 export const GetProvidersOrders = async (userId) => {
   try {
-    const res = await api.get(`/api/providers/${userId}?populate[orders][populate]=*`)
+    const res = await api.get(
+      `/api/providers/${userId}?populate[orders][populate]=*`
+    );
     // console.log('the response for this is ',res?.data?.data?.attributes?.orders?.data )
-    if (res?.data?.data?.attributes?.orders?.data) return res?.data?.data?.attributes?.orders?.data
+    if (res?.data?.data?.attributes?.orders?.data)
+      return res?.data?.data?.attributes?.orders?.data;
   } catch (error) {
-    console.log('error getting the user order attached', error)
+    console.log("error getting the user order attached", error);
   }
-}
+};
 
 export const GetOrderData = async (id) => {
   try {
     const data = await api.get(`/api/orders/${id}?populate=deep,4`);
-    if (data?.data?.data) return data?.data?.data
+    if (data?.data?.data) return data?.data?.data;
     return null;
   } catch (error) {
     console.log("Error geting data order   :", error.message); // Log the error response
@@ -255,7 +271,6 @@ export function useOrder(id) {
     retry: 3, // Number of retry attempts if the request fails
     retryDelay: 1000, // Delay between retries in milliseconds
     staleTime: 5 * 60 * 1000, //
-
   }); // Changed the query key to 'superheroes'
 
   return {
@@ -267,38 +282,77 @@ export function useOrder(id) {
 
 export const getNearOrders = async (providerId) => {
   try {
-    const data = await api.get(`/api/providers/${providerId}?populate[nearbyOrders][filters][status][$eq]=pending`);
-    if (data?.data?.data) {
-      const nearOrders = data?.data?.data?.attributes?.nearbyOrders?.data?.reverse()
-      return nearOrders
-    } else {
+    const providerRes = await api.get(
+      `/api/providers/${providerId}?populate=*`
+    );
+    const provider = providerRes?.data?.data?.attributes;
 
-      return null
+    if (!provider) {
+      console.log("❌ Provider not found");
+      return [];
     }
+
+    const providerLoc = provider?.googleMapLocation?.coordinate;
+    if (!providerLoc) {
+      console.log("⚠️ Provider has no coordinates");
+      return [];
+    }
+
+    const maxDistance = provider?.distance ?? 60000;
+
+    const ordersRes = await api.get(
+      `/api/orders?filters[status][$eq]=pending&populate=deep,3`
+    );
+    const allOrders = ordersRes?.data?.data || [];
+
+    const allowedCategories =
+      provider?.categories?.data?.map((c) => c.id) || [];
+
+    const nearbyOrders = allOrders.filter((order) => {
+      const attr = order.attributes;
+      const orderLoc = attr?.googleMapLocation?.coordinate;
+
+      if (!orderLoc || !attr.categoryId) return false;
+      if (!allowedCategories.includes(attr.categoryId)) return false;
+
+      const distance = haversine(
+        { lat: providerLoc.latitude, lon: providerLoc.longitude },
+        { lat: orderLoc.latitude, lon: orderLoc.longitude }
+      );
+
+      console.log(
+        `📏 Order ${order.id}: ${distance.toFixed(
+          2
+        )} m | allowed up to ${maxDistance} m`
+      );
+
+      return distance <= maxDistance;
+    });
+
+    console.log(`📍 Nearby pending orders found: ${nearbyOrders.length}`);
+    return nearbyOrders.reverse();
   } catch (error) {
-    console.log("Error geting data order   :", error.message); // Log the error response
+    console.log("❌ Error in getNearOrders:", error.message);
+    return [];
   }
 };
 
 export function useNearOrders(id) {
-
   const { data, isLoading, isError, refetch } = useQuery({
     queryKey: ["NearOrdersLocations", id],
     queryFn: () => getNearOrders(id),
     retry: 5, // Number of retry attempts if the request fails
     retryDelay: 1000, // Delay between retries in milliseconds
     staleTime: 1 * 60 * 1000, //
-
   }); // Changed the query key to 'superheroes'
 
   return {
     data: data,
     isLoading,
     isError,
-    refetch
+    refetch,
   };
 }
-
 
 export const getCurrentNearOrders = async (providerId, type) => {
   try {
@@ -314,9 +368,11 @@ export const getCurrentNearOrders = async (providerId, type) => {
       filter = "[filters][userOrderRating][$null]=false";
     }
 
-    const data = await api.get(`/api/providers/${providerId}?populate[orders]${filter}`);
+    const data = await api.get(
+      `/api/providers/${providerId}?populate[orders]${filter}`
+    );
     if (data?.data?.data) {
-      const Orders = data?.data?.data?.attributes?.orders?.data?.reverse()
+      const Orders = data?.data?.data?.attributes?.orders?.data?.reverse();
       console.log("the get current order with type", type, Orders?.length);
       return Orders;
     }
@@ -330,11 +386,10 @@ export const updateOrderData = async (id, orderData) => {
   try {
     const data = await api.put(`/api/orders/${id}`, {
       data: {
-        ...orderData
-
-      }
+        ...orderData,
+      },
     });
-    if (data?.data?.data?.id) return true
+    if (data?.data?.data?.id) return true;
     return false;
   } catch (error) {
     console.log("Error updatingorder order   :", error.message); // Log the error response
@@ -342,37 +397,31 @@ export const updateOrderData = async (id, orderData) => {
 };
 
 export function useCurrentOrders(id, type, refreshing) {
-
   const { data, isLoading, isError, refetch } = useQuery({
     queryKey: ["CurrentProvoiderOrders", type, refreshing],
     queryFn: () => getCurrentNearOrders(id, type),
     retry: 3, // Number of retry attempts if the request fails
     retryDelay: 1000, // Delay between retries in milliseconds
     staleTime: 5 * 60 * 1000, //
-
   }); // Changed the query key to 'superheroes'
 
   return {
     data,
     isLoading,
     isError,
-    refetch
+    refetch,
   };
 }
 export function useSingleOrder(id, refreshing) {
-
   const { data, isLoading, isError, refetch } = useQuery({
     queryKey: ["CurrentProvoiderOrders", id, refreshing],
     queryFn: () => GetOrderData(id),
-
-
-
   }); // Changed the query key to 'superheroes'
 
   return {
     data,
     isLoading,
     isError,
-    refetch
+    refetch,
   };
 }

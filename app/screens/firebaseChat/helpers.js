@@ -252,7 +252,6 @@ const processAudio = async (audioUri) => {
 // Example usage
 const audioUri = 'path/to/your/audio/file.mp3';
 uploadAudio(audioUri).then(audioUrl => {
-    console.log('Uploaded audio URL:', audioUrl);
     return audioUrl
 }).catch(error => {
     console.error('Failed to upload audio:', error);

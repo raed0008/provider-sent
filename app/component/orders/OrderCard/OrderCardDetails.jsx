@@ -153,55 +153,69 @@ const OrderCardDetails = ({
             ]}
           />
         </View>
-        {!isCompletedScreen &&
-          item?.attributes?.provider?.data?.attributes?.name &&
-          item?.attributes?.userOrderRating === null && (
-            <View style={styles.IconContainer}>
-              <TouchableOpacity
-                style={styles.chatContainer}
-                onPress={() => {
-                  dispatch(
-                    setcurrentChatChannel(item?.attributes?.chat_channel_id)
-                  );
-                  navigation.navigate(CHAT_ROOM_fireBase, {
-                    ProviderToken:
-                      item?.attributes?.provider?.data?.attributes
-                        ?.expoPushNotificationToken,
-                    ProviderId: item?.attributes?.provider?.data?.id,
-                    item: item,
-                  });
-                }}
-              >
-                <Entypo name="chat" size={20} color={Colors.primaryColor} />
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={styles.chatContainer}
-                onPress={() => {
-                  const mapLink = createMapLink(
-                    item?.attributes?.googleMapLocation?.coordinate?.latitude,
-                    item?.attributes?.googleMapLocation?.coordinate?.longitude
-                  );
-                  Linking.openURL(mapLink);
-                }}
-              >
-                <Entypo
-                  name="location-pin"
-                  size={20}
-                  color={Colors.primaryColor}
-                />
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={styles.chatContainer}
-                onPress={() =>
-                  handlePhoneCallPress(
-                    item?.attributes?.user?.data?.attributes?.phoneNumber
-                  )
-                }
-              >
-                <Entypo name="phone" size={20} color={Colors.primaryColor} />
-              </TouchableOpacity>
-            </View>
-          )}
+        {!isCompletedScreen && (
+          <View style={styles.IconContainer}>
+            {/* زر الشات */}
+            <TouchableOpacity
+              style={styles.chatContainer}
+              disabled={!item?.attributes?.chat_channel_id}
+              onPress={() => {
+                if (!item?.attributes?.chat_channel_id) return;
+                dispatch(
+                  setcurrentChatChannel(item?.attributes?.chat_channel_id)
+                );
+                navigation.navigate(CHAT_ROOM_fireBase, {
+                  ProviderToken:
+                    item?.attributes?.provider?.data?.attributes
+                      ?.expoPushNotificationToken,
+                  ProviderId: item?.attributes?.provider?.data?.id,
+                  item: item,
+                });
+              }}
+            >
+              <Entypo name="chat" size={20} color={Colors.primaryColor} />
+            </TouchableOpacity>
+
+            {/* زر الموقع */}
+            <TouchableOpacity
+              style={styles.chatContainer}
+              disabled={
+                !item?.attributes?.googleMapLocation?.coordinate?.latitude ||
+                !item?.attributes?.googleMapLocation?.coordinate?.longitude
+              }
+              onPress={() => {
+                const mapLink = createMapLink(
+                  item?.attributes?.googleMapLocation?.coordinate?.latitude,
+                  item?.attributes?.googleMapLocation?.coordinate?.longitude
+                );
+                Linking.openURL(mapLink);
+              }}
+            >
+              <Entypo
+                name="location-pin"
+                size={20}
+                color={Colors.primaryColor}
+              />
+            </TouchableOpacity>
+
+            {/* زر الاتصال */}
+            <TouchableOpacity
+              style={styles.chatContainer}
+              disabled={!item?.attributes?.user?.data?.attributes?.phoneNumber}
+              onPress={() =>
+                handlePhoneCallPress(
+                  item?.attributes?.user?.data?.attributes?.phoneNumber
+                )
+              }
+            >
+              <Entypo
+                name="phone"
+                size={20}
+                color={Colors.primaryColor}
+              />
+            </TouchableOpacity>
+          </View>
+        )}
       </View>
     </View>
   );

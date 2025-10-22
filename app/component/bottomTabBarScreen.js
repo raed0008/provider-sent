@@ -1,134 +1,192 @@
 import React, { useState, useCallback } from "react";
-import { BackHandler, View, Text, StyleSheet } from 'react-native'
+import { BackHandler, View, StyleSheet, Platform } from "react-native";
 import { Colors, Sizes, Fonts } from "../constant/styles";
 import HomeScreen from "../screens/home/homeScreen";
 import OrderScreen from "../screens/Orders/OrderScreen.js";
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { useFocusEffect } from "@react-navigation/native";
 import { useTranslation } from "react-i18next";
-import { MaterialCommunityIcons } from '@expo/vector-icons'; 
-import { Feather } from '@expo/vector-icons'; 
-import { AntDesign } from '@expo/vector-icons'; 
+import { Feather } from "@expo/vector-icons";
+import { AntDesign } from "@expo/vector-icons";
 import AccountNavigator from "../navigation/AccountNavigator";
-import { Octicons } from '@expo/vector-icons'; 
+import { Octicons } from "@expo/vector-icons";
 import CurrentOffersScreen from "../screens/CurrentOffersScreen/CurrentOffersScreen";
-import { MY_ORDERS, OFFERS ,HOME} from "../navigation/routes.js";
+import { MY_ORDERS, OFFERS, HOME } from "../navigation/routes.js";
 import { RFPercentage } from "react-native-responsive-fontsize";
+import AppText from "./AppText";
 
 const Tab = createBottomTabNavigator();
 
 const BottomTabBar = () => {
-    const { t } = useTranslation()
-    const backAction = () => {
-        backClickCount == 1 ? BackHandler.exitApp() : _spring();
-        return true;
-    }
+  const { t } = useTranslation();
+  const [backClickCount, setBackClickCount] = useState(0);
 
-    useFocusEffect(
-        useCallback(() => {
-            BackHandler.addEventListener("hardwareBackPress", backAction);
-            return () => BackHandler.removeEventListener("hardwareBackPress", backAction);
-        }, [backAction])
-    );
+  const backAction = () => {
+    backClickCount == 1 ? BackHandler.exitApp() : _spring();
+    return true;
+  };
 
-    function _spring() {
-        setBackClickCount(1);
-        setTimeout(() => {
-            setBackClickCount(0)
-        }, 1000)
-    }
+  useFocusEffect(
+    useCallback(() => {
+      BackHandler.addEventListener("hardwareBackPress", backAction);
+      return () =>
+        BackHandler.removeEventListener("hardwareBackPress", backAction);
+    }, [backAction])
+  );
 
-    const [backClickCount, setBackClickCount] = useState(0);
+  function _spring() {
+    setBackClickCount(1);
+    setTimeout(() => {
+      setBackClickCount(0);
+    }, 1000);
+  }
 
-    return (
-        <>
-            <Tab.Navigator
-                screenOptions={{
-                    headerShown: false,
-                    tabBarActiveTintColor: Colors.primaryColor,
-                    tabBarInactiveTintColor: '#7e7e7eff',
-                    tabBarLabelStyle: {
-                        fontSize: RFPercentage(1.7),
-                        fontFamily: 'Janna-Lt',
-                        fontWeight:700
-
-                    },
-                    tabBarStyle: { ...styles.tabBarStyle, },
+  return (
+    <>
+      <Tab.Navigator
+        screenOptions={{
+          headerShown: false,
+          tabBarActiveTintColor: Colors.primaryColor,
+          tabBarInactiveTintColor: "#7e7e7eff",
+          tabBarLabelStyle: {
+            fontSize: RFPercentage(1.7),
+            fontFamily: "Janna-Lt",
+            fontWeight: "700",
+            marginTop: Platform.OS === "android" ? -20 : 0, // move label closer to icon
+          },
+          tabBarItemStyle: {
+            position: Platform.OS === "android" ? "relative" : "static",
+            top: Platform.OS === "android" ? -20 : 0, // keep both higher overall
+          },
+          tabBarStyle: { ...styles.tabBarStyle },
+        }}
+      >
+        <Tab.Screen
+          name={t(HOME)}
+          component={HomeScreen}
+          options={{
+            tabBarIcon: ({ color }) => (
+              <Octicons name="home" size={27} color={color} />
+            ),
+            tabBarLabel: ({ color }) => (
+              <AppText
+                style={{
+                  color,
+                  fontSize: RFPercentage(1.7),
+                  fontFamily: "Janna-Lt",
+                  fontWeight: "700",
+                  position: "relative",
+                  top: Platform.OS === "android" ? -20 : 0,
                 }}
-            >
-                <Tab.Screen
-                    name={t(HOME)}
-                    component={HomeScreen}
-                    options={{
-                        tabBarIcon: ({ color }) => 
-                        <Octicons name="home" size={27} color={color}/>
+                text={t(HOME)}
+              />
+            ),
+          }}
+        />
 
-                    }}
-                />
-                <Tab.Screen
-                    name={t(OFFERS)}
-                    component={CurrentOffersScreen}
-                    options={{
-                        tabBarIcon: ({ color }) => <Feather name="inbox" size={27} color={color} />
-                    }}
-                />
-                <Tab.Screen
-                     name={t(MY_ORDERS)}
-                    component={OrderScreen}
-                    options={{
-                        tabBarIcon: ({ color }) => <Feather name="shopping-bag" size={27} color={color} />
-                    }}
-                />
-                <Tab.Screen
-                    name={t('Account')}
-                    component={AccountNavigator}
-                    options={{
-                        tabBarIcon: ({ color, }) => (
-                            <AntDesign name="user" size={27} color={color} />
-                        ),
-                    }}
-                />
-            </Tab.Navigator>
-            {exitInfo()}
-        </>
-    )
+        <Tab.Screen
+          name={t(OFFERS)}
+          component={CurrentOffersScreen}
+          options={{
+            tabBarIcon: ({ color }) => (
+              <Feather name="inbox" size={27} color={color} />
+            ),
+            tabBarLabel: ({ color }) => (
+              <AppText
+                style={{
+                  color,
+                  fontSize: RFPercentage(1.7),
+                  fontFamily: "Janna-Lt",
+                  fontWeight: "700",
+                  position: "relative",
+                  top: Platform.OS === "android" ? -20 : 0,
+                }}
+                text={t(OFFERS)}
+              />
+            ),
+          }}
+        />
+        <Tab.Screen
+          name={t(MY_ORDERS)}
+          component={OrderScreen}
+          options={{
+            tabBarIcon: ({ color }) => (
+              <Feather name="shopping-bag" size={27} color={color} />
+            ),
+            tabBarLabel: ({ color }) => (
+              <AppText
+                style={{
+                  color,
+                  fontSize: RFPercentage(1.7),
+                  fontFamily: "Janna-Lt",
+                  fontWeight: "700",
+                  position: "relative",
+                  top: Platform.OS === "android" ? -20 : 0,
+                }}
+                text={t(MY_ORDERS)}
+              />
+            ),
+          }}
+        />
+        <Tab.Screen
+          name={t("Account")}
+          component={AccountNavigator}
+          options={{
+            tabBarIcon: ({ color }) => (
+              <AntDesign name="user" size={27} color={color} />
+            ),
+            tabBarLabel: ({ color }) => (
+              <AppText
+                style={{
+                  color,
+                  fontSize: RFPercentage(1.7),
+                  fontFamily: "Janna-Lt",
+                  fontWeight: "700",
+                  position: "relative",
+                  top: Platform.OS === "android" ? -20 : 0,
+                }}
+                text={t("Account")}
+              />
+            ),
+          }}
+        />
+      </Tab.Navigator>
+      {exitInfo()}
+    </>
+  );
 
-    function exitInfo() {
-        return (
-            backClickCount == 1
-                ?
-                <View style={[styles.animatedView]}>
-                    <Text style={{ ...Fonts.whiteColor15Regular }}>
-                        Press back once again to exit
-                    </Text>
-                </View>
-                :
-                null
-        )
-    }
-}
+  function exitInfo() {
+    return backClickCount == 1 ? (
+      <View style={[styles.animatedView]}>
+        <AppText 
+          style={{ ...Fonts.whiteColor15Regular }}
+          text="Press back once again to exit"
+        />
+      </View>
+    ) : null;
+  }
+};
 
 const styles = StyleSheet.create({
-    animatedView: {
-        backgroundColor: '#333333',
-        position: "absolute",
-        bottom: 20,
-        alignSelf: 'center',
-        borderRadius: Sizes.fixPadding * 2.0,
-        paddingHorizontal: Sizes.fixPadding + 5.0,
-        paddingVertical: Sizes.fixPadding,
-        justifyContent: "center",
-        alignItems: "center",
-    },
-    tabBarStyle: {
-        height: 70.0,
-        elevation: 3.0,
-        borderTopColor: 'black',
-        borderTopWidth: 0.20,
-
-        paddingTop: Sizes.fixPadding - 5.0,
-        paddingBottom: Sizes.fixPadding - 5.0,
-    }
-})
+  animatedView: {
+    backgroundColor: "#333333",
+    position: "absolute",
+    bottom: 20,
+    alignSelf: "center",
+    borderRadius: Sizes.fixPadding * 2.0,
+    paddingHorizontal: Sizes.fixPadding + 5.0,
+    paddingVertical: Sizes.fixPadding,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  tabBarStyle: {
+    height: Platform.OS === "android" ? 100 : 70, // higher on Android
+    elevation: 3.0,
+    borderTopColor: "black",
+    borderTopWidth: 0.2,
+    paddingTop: Sizes.fixPadding - 5.0,
+    paddingBottom: Sizes.fixPadding - 5.0,
+  },
+});
 
 export default BottomTabBar;

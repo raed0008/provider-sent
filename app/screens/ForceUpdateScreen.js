@@ -5,7 +5,7 @@ export default function ForceUpdateModal({ visible }) {
   const handleUpdate = () => {
     const url =
       Platform.OS === "ios"
-        ? "https://apps.apple.com/app/id6498963738"
+        ? "https://apps.apple.com/app/id6498982246"
         : "https://play.google.com/store/apps/details?id=com.njik.nijkProvider";
 
     Linking.openURL(url);

@@ -8,6 +8,7 @@ export const PREVIOUS_ORDERS = ("Previous")
 export const ORDERS = ("Current")
 
 export const COMPLETE_ORDERS_DETAILS = (" تفاصيل مكتمل تنفيذها")
+export const STC_PAYMENT_SUCCESS = "StcPaymentSuccess"
 
 
 export const BROWSE_ORDERS = ("show-orders")

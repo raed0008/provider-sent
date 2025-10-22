@@ -78,15 +78,41 @@ const App = () => {
   const [loading, setLoading] = useState(false);
   const [notificationPermissionRequested, setNotificationPermissionRequested] = useState(false);
 
+  // تحسين getToken مع logs أوضح
   useEffect(() => {
     const getToken = async () => {
-      const { status } = await Notifications.requestPermissionsAsync();
-      console.log("Notification permission:", status);
+      try {
+        const { status } = await Notifications.getPermissionsAsync();
+        console.log("🔐 Notification permission status:", status);
 
-      const token = (await Notifications.getExpoPushTokenAsync()).data;
-      console.log("Expo push token:", token);
+        if (status !== 'granted') {
+          const request = await Notifications.requestPermissionsAsync();
+          console.log("📩 Permission requested, new status:", request.status);
+        }
+
+        const tokenData = await Notifications.getExpoPushTokenAsync();
+        console.log("🎯 Expo Push Token:", tokenData.data);
+      } catch (error) {
+        console.error("❌ Error while getting Expo Push Token:", error);
+      }
     };
     getToken();
+  }, []);
+
+  // إضافة listeners للإشعارات
+  useEffect(() => {
+    const subscription = Notifications.addNotificationReceivedListener(notification => {
+      console.log("📩 إشعار استلمه التطبيق (Foreground):", notification);
+    });
+
+    const responseSubscription = Notifications.addNotificationResponseReceivedListener(response => {
+      console.log("🕹 المستخدم تفاعل مع الإشعار:", response);
+    });
+
+    return () => {
+      subscription.remove();
+      responseSubscription.remove();
+    };
   }, []);
 
   useEffect(() => {
@@ -285,7 +311,6 @@ const MainComponent = memo(({ loading }) => {
       try {
         if (!providerId) return;
         const data = await checkForceUpdate(providerId);
-        console.log("📢 ForceUpdate Response:", data);
 
         if (data?.Force_update) {
           setForceUpdate(true);
