@@ -2,7 +2,7 @@
   "expo": {
     "name": "فني نجيك",
     "slug": "NijkProvider-app",
-    "version": "2.5.0",
+    "version": "2.5.4",
     "orientation": "portrait",
     "icon": "./app/assets/images/icon3.png",
     "userInterfaceStyle": "light",

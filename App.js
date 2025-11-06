@@ -311,12 +311,34 @@ const MainComponent = memo(({ loading }) => {
       try {
         if (!providerId) return;
         const data = await checkForceUpdate(providerId);
-
-        if (data?.Force_update) {
-          setForceUpdate(true);
-        }
+        if (!data) return;
 
         const version = Constants.expoConfig.version;
+        const minRequired = data?.min_required_version;
+
+        let shouldForceUpdate = false;
+
+        if (data?.Force_update && minRequired) {
+          // تحويل النسخ إلى arrays من الأرقام للمقارنة الصحيحة
+          const current = version.split('.').map(Number);
+          const required = minRequired.split('.').map(Number);
+          
+          // مقارنة كل جزء من النسخة
+          for (let i = 0; i < Math.max(current.length, required.length); i++) {
+            const curr = current[i] || 0;
+            const req = required[i] || 0;
+            
+            if (req > curr) {
+              shouldForceUpdate = true;
+              break;
+            } else if (req < curr) {
+              break;
+            }
+          }
+        }
+
+        setForceUpdate(shouldForceUpdate);
+
         await updateProviderData(providerId, { App_version: version });
       } catch (err) {
         console.log("❌ Error checking force update:", err);
