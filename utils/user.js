@@ -197,4 +197,26 @@ export const DeleteNotification = async (id, type, notificationId) => {
   }
 };
 
+export const incrementCancelRequestsCount = async (providerId) => {
+  try {
+    const provider = await getProviderById(providerId);
+    const currentCount = provider?.attributes?.cancel_requests_count ?? 0;
+
+    const updated = await updateProviderData(providerId, {
+      cancel_requests_count: currentCount + 1,
+    });
+
+    if (updated) {
+      console.log(`✅ cancel_requests_count incremented successfully (${currentCount} → ${currentCount + 1})`);
+      return true;
+    } else {
+      console.log("❌ failed to update cancel_requests_count");
+      return false;
+    }
+  } catch (err) {
+    console.log("❌ Error incrementing cancel_requests_count:", err.message);
+    return false;
+  }
+};
+
 

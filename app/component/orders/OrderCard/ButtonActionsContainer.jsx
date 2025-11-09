@@ -235,6 +235,7 @@ const ButtonActionsContainer = ({
                   orderId: orderData?.id,
                   refetch,
                   from: route.name,
+                  providerId: provider?.id || provider?.attributes?.id,
                 })
               }
             />
