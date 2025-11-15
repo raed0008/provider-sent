@@ -61,7 +61,7 @@ export default function PaymentAfterServiceDetails({ route, navigation }) {
   const [showModal, setShowModal] = useState(false);
   const [loading, setLoading] = useState(false);
   // Remove additionalAmounts state, keep only spareParts
-  const [spareParts, setSpareParts] = useState([]);
+  const [spareParts, setSpareParts] = useState({ amount: null, billImage: "" });
   const [servicesList, setServicesList] = useState([]);
   const [selectedService, setSelectedService] = useState(null);
   const [tempSelectedService, setTempSelectedService] = useState(null);
@@ -257,9 +257,6 @@ export default function PaymentAfterServiceDetails({ route, navigation }) {
   };
 
   if (loading) return <LoadingScreen />;
-
-  console.log("🟡 Service Carts:", order?.attributes?.service_carts?.data);
-  console.log("🟡 Services Orders:", servicesOrders);
   const totalServicesCount =
     (order?.attributes?.service_carts?.data?.filter(
       (cart) => !hiddenCartIds.includes(cart.id)
@@ -268,15 +265,10 @@ export default function PaymentAfterServiceDetails({ route, navigation }) {
     (pendingServices.filter((p) => p.type === "add").length || 0);
 
   const isValidSpareParts = (spareParts) => {
-    if (!spareParts || spareParts.length === 0) {
-      return true;
-    }
-
-    return spareParts.every((part) => {
-      const hasAmount = part?.amount && Number(part.amount) > 0;
-      const hasImage = part?.billImage && part.billImage.trim() !== "";
-      return hasAmount && hasImage;
-    });
+    if (!spareParts) return true; // يعني ما أضاف قطع غيار، ما في مشكلة
+    const hasAmount = spareParts?.amount && Number(spareParts.amount) > 0;
+    const hasImage = spareParts?.billImage && spareParts.billImage.trim() !== "";
+    return hasAmount && hasImage;
   };
 
   const handleRequestPayment = async (id) => {
@@ -623,12 +615,12 @@ export default function PaymentAfterServiceDetails({ route, navigation }) {
               });
               setServicesOrders((prev) => [...prev, saved]);
             }
-
-            Toast.show({
-              type: "success",
-              text1: successText,
-              text2: t("data_saved_successfully"),
-            });
+              
+              Toast.show({
+                type: "success",
+                text1: successText,
+                text2: t("data_saved_successfully"),
+              });
           } catch (err) {
             console.log("❌ Error in final confirm:", err);
             Toast.show({

@@ -10,7 +10,6 @@ import React, { memo, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Colors } from "../../constant/styles";
 import OrderCardHeaderComponent from "./OrderCardHeaderComponent";
-import OrderStatusCardComponent from "./OrderStatusCardComponent";
 import OrderCardDetails from "./OrderCard/OrderCardDetails";
 import { GetOrderData, useSingleOrder } from "../../../utils/orders";
 import { SingleCardLoading } from "../loading/SingelCardLoading";

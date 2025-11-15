@@ -52,11 +52,11 @@ const BottomTabBar = () => {
             fontSize: RFPercentage(1.7),
             fontFamily: "Janna-Lt",
             fontWeight: "700",
-            marginTop: Platform.OS === "android" ? -20 : 0, // move label closer to icon
+            marginTop: 0, // move label closer to icon
           },
           tabBarItemStyle: {
             position: Platform.OS === "android" ? "relative" : "static",
-            top: Platform.OS === "android" ? -20 : 0, // keep both higher overall
+            top: 0, // keep both higher overall
           },
           tabBarStyle: { ...styles.tabBarStyle },
         }}
@@ -76,7 +76,7 @@ const BottomTabBar = () => {
                   fontFamily: "Janna-Lt",
                   fontWeight: "700",
                   position: "relative",
-                  top: Platform.OS === "android" ? -20 : 0,
+                  top: 0,
                 }}
                 text={t(HOME)}
               />
@@ -99,7 +99,7 @@ const BottomTabBar = () => {
                   fontFamily: "Janna-Lt",
                   fontWeight: "700",
                   position: "relative",
-                  top: Platform.OS === "android" ? -20 : 0,
+                  top: 0,
                 }}
                 text={t(OFFERS)}
               />
@@ -121,7 +121,7 @@ const BottomTabBar = () => {
                   fontFamily: "Janna-Lt",
                   fontWeight: "700",
                   position: "relative",
-                  top: Platform.OS === "android" ? -20 : 0,
+                  top: 0,
                 }}
                 text={t(MY_ORDERS)}
               />
@@ -143,7 +143,7 @@ const BottomTabBar = () => {
                   fontFamily: "Janna-Lt",
                   fontWeight: "700",
                   position: "relative",
-                  top: Platform.OS === "android" ? -20 : 0,
+                  top: 0,
                 }}
                 text={t("Account")}
               />
@@ -180,7 +180,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   tabBarStyle: {
-    height: Platform.OS === "android" ? 100 : 70, // higher on Android
+    height: 70, // higher on Android
     elevation: 3.0,
     borderTopColor: "black",
     borderTopWidth: 0.2,

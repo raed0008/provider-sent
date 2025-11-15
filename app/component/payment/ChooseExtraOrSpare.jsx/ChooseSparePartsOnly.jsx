@@ -9,7 +9,10 @@ const ChooseSparePartsOnly = ({ setSpareParts, spareParts }) => {
   return (
     <View style={styles.container}>
       {/* شاشة إضافة قطع الغيار */}
-      <AddSparePartsSheet setSpareParts={setSpareParts} />
+      <AddSparePartsSheet
+        spareParts={spareParts}
+        setSpareParts={setSpareParts}
+      />
 
       {/* عرض قائمة القطع المضافة */}
       {/* <RenderAdditionalPriceList

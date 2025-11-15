@@ -23,11 +23,8 @@ export default function CompletedOrdersScreen({ navigation }) {
   const dispatch = useDispatch()
   const [refreshing, setRefreshing] = useState(false);
   const { data, isLoading, isError, refetch } = useCurrentOrders(user?.id, "finished");
-  console.log('All orders data:', data); // Debug log to check data
   const filteredData = (data || [])
-    // 🟢 نخليها تجيب فقط الطلبات finished
     .filter((order) => order?.attributes?.status === "finished")
-    // 🟢 ونفلترها إنها تكون أقل من 30 يوم
     .filter((order) => {
       const createdAt = new Date(order?.attributes?.createdAt);
       const now = new Date();
@@ -51,7 +48,6 @@ export default function CompletedOrdersScreen({ navigation }) {
   }
 
   const RenderItem = useCallback(({ item, index }) => {
-    console.log('Rendering completed order item:', item);
 
     if (!item?.id) {
       console.log('Item id is missing:', item);

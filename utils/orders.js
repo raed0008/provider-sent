@@ -320,16 +320,14 @@ export const getNearOrders = async (providerId) => {
         { lat: orderLoc.latitude, lon: orderLoc.longitude }
       );
 
-      console.log(
-        `📏 Order ${order.id}: ${distance.toFixed(
-          2
-        )} m | allowed up to ${maxDistance} m`
-      );
+      // console.log(
+      //   `📏 Order ${order.id}: ${distance.toFixed(
+      //     2
+      //   )} m | allowed up to ${maxDistance} m`
+      // );
 
       return distance <= maxDistance;
     });
-
-    console.log(`📍 Nearby pending orders found: ${nearbyOrders.length}`);
     return nearbyOrders.reverse();
   } catch (error) {
     console.log("❌ Error in getNearOrders:", error.message);
@@ -425,3 +423,13 @@ export function useSingleOrder(id, refreshing) {
     refetch,
   };
 }
+
+export const getOrderById = async (id, populate = "deep,3") => {
+  try {
+    const res = await api.get(`/api/orders/${id}?populate=${populate}`);
+    return res?.data?.data;
+  } catch (error) {
+    console.error("❌ Error fetching order by id:", error);
+    return null;
+  }
+};

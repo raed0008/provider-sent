@@ -226,7 +226,6 @@ const MainComponent = ({ ModalisLoading, setModalIsLoading }) => {
     const interval = setInterval(async () => {
       await refetch();
       setAutoRefreshKey(prev => prev + 1);
-      console.log("🔄 Auto refreshed orders");
     }, 10000);
 
     return () => clearInterval(interval);
@@ -323,10 +322,8 @@ const OrdersListComponent = ({ orders, setModalIsLoading }) => {
   
   
   useEffect(() => {
-    console.log("📬 OrdersListComponent received orders:", orders?.length);
     if (orders?.length > 0) {
       orders.forEach((item, index) => {
-        console.log(`✅ Order[${index}] => ID: ${item.id}, Status: ${item.attributes?.status}`);
       });
     }
   }, [orders]);

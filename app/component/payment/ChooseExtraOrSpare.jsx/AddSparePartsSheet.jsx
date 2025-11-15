@@ -20,7 +20,7 @@ const AddSparePartsSheet = ({ setSpareParts }) => {
 
   const saveSpareParts = (amount, billImage) => {
     if (amount > 0 && billImage) {
-      setSpareParts((prev) => [...prev, { amount, billImage }]);
+      setSpareParts({ amount, billImage });
     }
   };
 
@@ -33,11 +33,8 @@ const AddSparePartsSheet = ({ setSpareParts }) => {
   const handleConfirmImage = () => {
     if (additionalAmount > 0 && billImage) {
       const newPart = { amount: additionalAmount, billImage };
-      setSpareParts((prev) => {
-        const updated = [...prev, newPart];
-        console.log("🟡 Updated spareParts (from confirm image):", updated);
-        return updated;
-      });
+      setSpareParts(newPart);
+      console.log("🟡 Updated spareParts (from confirm image):", newPart);
       dispatch(saveSparePartTemp(newPart));
     }
   };
@@ -46,11 +43,11 @@ const AddSparePartsSheet = ({ setSpareParts }) => {
     const parsedAmount = Number(text);
     if (!isNaN(parsedAmount) && parsedAmount > 0) {
       setAdditionalAmount(parsedAmount);
-      setSpareParts([{ amount: parsedAmount, billImage }]);
+      setSpareParts({ amount: parsedAmount, billImage });
       dispatch(saveSparePartTemp({ amount: parsedAmount, billImage }));
     } else {
       setAdditionalAmount(null);
-      setSpareParts([]);
+      setSpareParts(null);
       dispatch(saveSparePartTemp({ amount: null, billImage: null }));
     }
   };
@@ -62,7 +59,7 @@ const AddSparePartsSheet = ({ setSpareParts }) => {
       if (downloadURL) {
         const img = downloadURL[0];
         setBillImage(img);
-        setSpareParts([{ amount: additionalAmount, billImage: img }]);
+        setSpareParts({ amount: additionalAmount, billImage: img });
         dispatch(saveSparePartTemp({ amount: additionalAmount, billImage: img }));
       }
     } catch (error) {
@@ -131,7 +128,7 @@ const AddSparePartsSheet = ({ setSpareParts }) => {
             <MaterialIcons
               onPress={() => {
                 setBillImage(null);
-                setSpareParts([]);
+                setSpareParts(null);
                 dispatch(saveSparePartTemp({ amount: null, billImage: null }));
               }}
               name="delete"

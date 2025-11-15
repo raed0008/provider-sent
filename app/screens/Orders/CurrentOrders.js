@@ -22,7 +22,6 @@ export default function CurrentOrders({ navigation }) {
   const dispatch = useDispatch()
   const [refreshing, setRefreshing] = useState(false);
   const { data, isError, isLoading, refetch } = useCurrentOrders(user?.id, 'current', refreshing)
-  console.log(data); // Debug log to check data
   const { language } = useLanguageContext();
 
   useEffect(() => {
@@ -45,10 +44,8 @@ export default function CurrentOrders({ navigation }) {
   }
 
   const RenderItem = useCallback(({ item, index }) => {
-    console.log('Rendering item:', item);
 
     if (!item?.id) {
-      console.log('Item id is missing:', item);
       return null;
     }
 
@@ -57,8 +54,6 @@ export default function CurrentOrders({ navigation }) {
         <CurrentOrderCard
           orderId={item?.id}
           onPress={(order) => {
-            console.log('Card pressed, orderId:', item?.id);
-            console.log('Navigation object:', navigation);
             console.log('ORDERS_DETAILS route:', ORDERS_DETAILS);
 
             try {

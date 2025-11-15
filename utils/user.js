@@ -61,25 +61,36 @@ export const updateUserData = async (id, data) => {
 export const updateUserDataClient = async (id, data) => {
   try {
     const updatedUser = await api.put(`/api/users/${id}`, {
-      ...data
-    })
-    if (updateUserData) return true
-    return false
+      ...data,
+    });
+    if (updateUserData) return true;
+    return false;
   } catch (error) {
-    console.log('error updating the user ', error.message)
+    console.log("error updating the user ", error.message);
   }
-}
+};
 export const getUserById = async (id) => {
   try {
     if (id) {
-
-      const user = await api.get(`/api/users/${id}?populate=*`)
-      return user?.data
+      const user = await api.get(`/api/users/${id}?populate=*`);
+      return user?.data;
     }
   } catch (error) {
-    console.log("Error getting the user ", error.message)
+    console.log("Error getting the user ", error.message);
   }
-}
+};
+export const getUserAttributesById = async (id) => {
+  try {
+    if (id) {
+      const user = await api.get(`/api/users/${id}`);
+      return user?.data;
+    }
+  } catch (error) {
+    console.log("Error getting the user attributes ", error.message);
+    return null;
+  }
+};
+
 export const getProviderById = async (id) => {
   try {
     if (id) {
@@ -91,7 +102,6 @@ export const getProviderById = async (id) => {
     return null;
   }
 };
-
 
 export const updateProviderData = async (id, data) => {
   try {
@@ -119,9 +129,9 @@ export const AddNewNotification = async (id, type, notification, store) => {
     if (!store) return;
 
     let data;
-    if (type === 'provider') {
+    if (type === "provider") {
       data = await getProviderById(id);
-      data = data?.data?.attributes
+      data = data?.data?.attributes;
     } else {
       data = await getUserById(id);
     }
@@ -137,17 +147,21 @@ export const AddNewNotification = async (id, type, notification, store) => {
     const updatedNotifications = [...currentNotifications, notification];
 
     let res;
-    if (type === 'provider') {
-      res = await updateProviderData(id, { notifications: updatedNotifications });
+    if (type === "provider") {
+      res = await updateProviderData(id, {
+        notifications: updatedNotifications,
+      });
     } else {
-      res = await updateUserDataClient(id, { notifications: updatedNotifications });
+      res = await updateUserDataClient(id, {
+        notifications: updatedNotifications,
+      });
     }
 
     if (res) {
-      console.log('The result of updating the notifications:', res);
+      console.log("The result of updating the notifications:", res);
     }
   } catch (err) {
-    console.log('Error adding new notification:', err);
+    console.log("Error adding new notification:", err);
   }
 };
 
@@ -164,7 +178,7 @@ export const checkForceUpdate = async (id) => {
 export const DeleteNotification = async (id, type, notificationId) => {
   try {
     let data;
-    if (type === 'provider') {
+    if (type === "provider") {
       data = await getProviderById(id);
       // console.log('getting the provider data with id of', id, data?.data?.attributes?.notifications);
     } else {
@@ -177,23 +191,31 @@ export const DeleteNotification = async (id, type, notificationId) => {
     }
 
     const updatedNotifications = data?.data?.attributes?.notifications?.filter(
-      notification => notification?.id !== notificationId
+      (notification) => notification?.id !== notificationId
     );
 
-    console.log('the updated notification length is ', data?.data?.attributes?.notifications[0], notificationId)
+    console.log(
+      "the updated notification length is ",
+      data?.data?.attributes?.notifications[0],
+      notificationId
+    );
 
     let res;
-    if (type === 'provider') {
-      res = await updateProviderData(id, { notifications: updatedNotifications });
+    if (type === "provider") {
+      res = await updateProviderData(id, {
+        notifications: updatedNotifications,
+      });
     } else {
-      res = await updateUserDataClient(id, { notifications: updatedNotifications });
+      res = await updateUserDataClient(id, {
+        notifications: updatedNotifications,
+      });
     }
 
     if (res) {
-      console.log('The result of updating the notifications:', res);
+      console.log("The result of updating the notifications:", res);
     }
   } catch (err) {
-    console.log('Error deleting notification:', err);
+    console.log("Error deleting notification:", err);
   }
 };
 
@@ -207,7 +229,11 @@ export const incrementCancelRequestsCount = async (providerId) => {
     });
 
     if (updated) {
-      console.log(`✅ cancel_requests_count incremented successfully (${currentCount} → ${currentCount + 1})`);
+      console.log(
+        `✅ cancel_requests_count incremented successfully (${currentCount} → ${
+          currentCount + 1
+        })`
+      );
       return true;
     } else {
       console.log("❌ failed to update cancel_requests_count");
@@ -218,5 +244,3 @@ export const incrementCancelRequestsCount = async (providerId) => {
     return false;
   }
 };
-
-

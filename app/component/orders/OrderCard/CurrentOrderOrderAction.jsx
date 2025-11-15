@@ -20,7 +20,6 @@ const CurrentOrderOrderAction = ({ item, handleOrderCancle }) => {
     if (item) {
       const hasAdditionalPrice = isOrderContainAdditionalPriceOrSpare(item);
       setSeeAdditionalPricePage(hasAdditionalPrice);
-      console.log("📌 hasAdditionalPrice:", hasAdditionalPrice);
     }
   }, [item]);
 

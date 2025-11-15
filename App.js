@@ -300,7 +300,7 @@ export default App;
 
 const MainComponent = memo(({ loading }) => {
   const { direction } = useLanguageContext();
-  const { top } = useSafeAreaInsets();
+  const insets = useSafeAreaInsets();
   const [forceUpdate, setForceUpdate] = useState(false);
 
   const provider = useSelector((state) => state.user?.userData);
@@ -356,14 +356,22 @@ const MainComponent = memo(({ loading }) => {
       logoHeight={height}
       logoWidth={width}
     >
-      <SafeAreaView style={{ flex: 1, backgroundColor: Colors.whiteColor, direction: direction }}>
+      <SafeAreaView
+        style={{
+          flex: 1,
+          backgroundColor: Colors.whiteColor,
+          direction,
+          paddingTop: Platform.OS === "android" ? insets.top : 0,
+          paddingBottom: Platform.OS === "android" ? insets.bottom : 0,
+        }}
+      >
         {/* ✅ البانر يطلع فوق كل الشاشات */}
         {forceUpdate && <ForceUpdateModal />}
 
         <RootNavigator />
         <Toast
           position="top"
-          topOffset={+top + 20}
+          topOffset={insets.top + 20}
           config={toastConfig}
         />
       </SafeAreaView>
